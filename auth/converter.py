@@ -11,17 +11,18 @@ segments = []
 final = []
 
 def read():
-	print('rec')
-	n_data = sd.rec(2 * fs, samplerate=fs, channels=1)
-	sd.wait()
-	print('play')
-	sd.play(n_data, fs)
-	sd.wait()
-	# n_data = sf.read('song.wav')
+	# print('rec')
+	# n_data = sd.rec(2 * fs, samplerate=fs, channels=1)
+	# sd.wait()
+	# print('play')
+	# sd.play(n_data, fs)
+	# sd.wait()
+	n_data = sf.read('kostya_voice.wav')
 	global data 
-	data = [0 for i in range(0, len(n_data))]
+	data = [0 for i in range(0, len(n_data[0]))]
+	# print(n_data)
 	for i in range(0, len(data)):
-		data[i] = n_data[i][0]
+		data[i] = n_data[0][i]
 
 def normalize():
 	mx = -100
@@ -37,7 +38,7 @@ def hemming(id):
 
 def fft(id, inv):
 	res = []
-	cntdots = 200
+	cntdots = 1000
 	for i in range(0, cntdots):
 		s = complex(0, 0)
 		for j in range(0, LEN):
@@ -55,6 +56,7 @@ normalize()
 
 LEN = fs // 10
 print(LEN)
+print(len(data))
 for i in range(LEN, len(data), LEN // 2):
 	if i + LEN >= len(data):
 		break
