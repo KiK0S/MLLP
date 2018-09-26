@@ -27,20 +27,21 @@ def run():
 		# sd.play(n_data, fs)
 		# sd.wait()
 		# print(n_data.shape)
-		# n_data = sf.read(NAME + '_voice.wav') # if use this, use n_data[0]
+		n_data = sf.read(NAME + '_voice.wav') # if use this, use n_data[0]
 		# print(n_data)
-		# n_data = n_data[0]
+		n_data = n_data[0]
 		# print(n_data)
-		n_data = []
-		for i in range(0, fs * 2):
-			n_data.append(math.sin(1000 * 2 * math.pi * i / fs) + 0.5 * math.sin(2500 * 2 * math.pi * i / fs))
-		plt.plot(n_data)
-		plt.show()
-		sf.write(NAME + '_voice.wav', n_data, samplerate=fs);
+		# n_data = []
+		# for i in range(0, fs * 2):
+		# 	n_data.append(math.sin(1000 * 2 * math.pi * i / fs))
+		# sd.play(n_data, fs)
+		# plt.plot(n_data)
+		# plt.show()
+		# sf.write(NAME + '_voice.wav', n_data, samplerate=fs);
 		nonlocal data 
-		data = [0 for i in range(0, len(n_data))]
-		for i in range(0, len(data)):
-			data[i] = n_data[i]
+		# for x in n_data:
+		# 	print(x)
+		data = [x for x in n_data]
 
 	def normalize(val):
 		mx = -100
@@ -84,43 +85,55 @@ def run():
 		segments[id] = fft(segments[id])
 
 	read()
-	# print(len(data))
+	print(len(data))
 	normalize(data)
-	LEN = fs // 5
-	for i in range(0, len(data), LEN // 2):
-		if i + LEN >= len(data):
-			break
-		segments.append(data[i:i + LEN])
-		convert(len(segments) - 1)
-	mx = -100
-	id_ans = 0
-	for i in range(0, 2 * LEN):
-		sr = 0
-		si = 0
-		for j in range(0, len(segments)):
-			sr += math.sqrt(segments[j][i].real * segments[j][i].real + segments[j][i].imag * segments[j][i].imag)
-			si += segments[j][i].imag
-		sr /= len(segments)
-		si /= len(segments)
-		if sr >= mx:
-			mx = sr
-			id_ans = i
-		real_part.append(sr)
-		imag_part.append(si)
-	print(id_ans * 5);
-	real_part = real_part[1:]
-	# normalize(real_part)
-	normalize(imag_part)
+	# LEN = fs // 5
+	# for i in range(0, len(data), LEN // 2):
+	# 	if i + LEN >= len(data):
+	# 		break
+	# 	segments.append(data[i:i + LEN])
+	# 	convert(len(segments) - 1)
+	# mx = -100
+	# id_ans = 0
+	# for i in range(0, 2 * LEN):
+	# 	sr = 0
+	# 	si = 0
+	# 	for j in range(0, len(segments)):
+	# 		sr += math.sqrt(segments[j][i].real * segments[j][i].real + segments[j][i].imag * segments[j][i].imag)
+	# 		si += segments[j][i].imag
+	# 	sr /= len(segments)
+	# 	si /= len(segments)
+	# 	if sr >= mx:
+	# 		mx = sr
+	# 		id_ans = i
+	# 	real_part.append(sr)
+	# 	imag_part.append(si)
+	# print(id_ans * 5);
+	# real_part = real_part[1:]
+	# # normalize(real_part)
+	# normalize(imag_part)
+	# # plt.plot(data)
+	# plt.plot(real_part, 'b')
+	# plt.savefig(NAME + '_fft.png')
+	# # plt.plot(imag_part[0:100], 'r')
+	# plt.show()
+	# os.popen('touch ' + NAME + '_data')
+	# plt.gcf().clear()
+	# out = open(NAME + '_data', 'w')
+	# for it in real_part:
+	# 	out.write(str(it) + ' ')
+	np_data = np.array(data)
+	np_data = np.fft.fft(np_data)
+	normalize(np_data)
+	# print(np_data)
 	# plt.plot(data)
-	plt.plot(real_part, 'b')
-	plt.savefig(NAME + '_fft.png')
-	# plt.plot(imag_part[0:100], 'r')
+	# np_data_real = [x.real for x in np_data]
+	# np_data_imag = [x.imag for x in np_data]
+	plt.plot(np_data[:10000])
 	plt.show()
-	os.popen('touch ' + NAME + '_data')
-	plt.gcf().clear()
-	out = open(NAME + '_data', 'w')
-	for it in real_part:
-		out.write(str(it) + ' ')
+	with open(NAME + '_data', 'w') as out:
+		for it in np_data:
+			out.write(str(it) + ' ')	
 time.sleep(1)
 sys.stdin = open('names.txt')
 n = int(input())
