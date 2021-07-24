@@ -1,9 +1,5 @@
-# My sound programs about sound
-
-requirements: 
-```
-python3 -m pip install -r requirements.txt
-```
+# My python sound research programs
 
 Sample volume generator: generate_simple.ipynb
-Pink Panther generator: generate_pink_panther.ipynb
+Pink Panther song theme generator: generate_pink_panther.ipynb
+Authentication by voice: auth.ipynb
